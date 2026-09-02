@@ -5,4 +5,4 @@ Un solo file (`index.html`), nessun server: i dati restano salvati nel browser.
 
 Online: https://robygaiera.github.io/fantasta/
 
-Quotazioni da fantacalcio-online.com, aggiornate al 2 settembre 2026.
+Listone ufficiale Fantacalcio.it (Qt.A, Qt.I, FVM, ruoli Mantra) e studio personale (rating, stelle, fascia, titolari, rigoristi, obiettivi) importati dal file «Fantacalcio 26/27».
