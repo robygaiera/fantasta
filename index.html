@@ -144,6 +144,31 @@ dialog::backdrop{background:rgba(10,20,14,.5)}
 .toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 
+/* ---------- stampa / PDF ---------- */
+function buildPrint(){
+  const c = calc(); const today = new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+  const roles = ROLES.map(r=>{
+    const list = S.bought.filter(p=>p.role===r).sort((a,b)=>b.price-a.price);
+    const n = +S.slots[r]||0, sub = spentRole(r);
+    const rows = list.map(p=>`<tr><td class="n">${esc(p.name)}</td><td class="team">${esc(p.team||'')}</td><td class="num">${p.q||'–'}</td><td class="num">${fmt(p.price)}</td></tr>`).join('');
+    const empties = Math.max(0,n-list.length);
+    const emptyRows = empties ? `<tr class="empty"><td colspan="4">${empties} ${empties===1?'posto libero':'posti liberi'}</td></tr>` : '';
+    return `<div class="pv-role"><h2><span class="chip ${r}">${r}</span>${RNAME[r]}<span class="r">${list.length}/${n} · ${fmt(sub)} crediti</span></h2>
+      <table class="pv"><thead><tr><th>Giocatore</th><th>Squadra</th><th class="num">Qt.A</th><th class="num">Pagato</th></tr></thead>
+      <tbody>${rows}${emptyRows}<tr class="tot"><td colspan="3">Totale ${RNAME[r].toLowerCase()}</td><td class="num">${fmt(sub)}</td></tr></tbody></table></div>`;
+  }).join('');
+  const wl = S.wish.filter(w=>!S.bought.some(b=>b.key===w.key));
+  const wlHtml = wl.length ? `<div class="pv-wl"><h2>Obiettivi non ancora presi (${wl.length})</h2><ul>${ROLES.map(r=>wl.filter(w=>w.role===r)).flat().map(w=>`<li>${w.role} · ${esc(w.name)} <span style="color:#555">${esc(w.team||'')}</span>${w.plan?' · piano '+fmt(w.plan):''}</li>`).join('')}</ul></div>` : '';
+  $('#printView').innerHTML = `<div class="pv-h"><h1>FantAsta 2026/27 · La mia rosa</h1><span class="d">${today}</span></div>
+    <div class="pv-sum"><div><b>${fmt(S.budget)}</b><span>Budget</span></div><div><b>${fmt(spent())}</b><span>Spesi</span></div><div><b>${fmt(c.rem)}</b><span>Rimasti</span></div><div><b>${S.bought.length}/${totalSlots()}</b><span>Giocatori</span></div>${c.left>0?`<div><b>${fmt(c.avg)}</b><span>Media restanti</span></div>`:''}</div>
+    ${roles}
+    <div class="pv-grand"><span>Totale speso <b>${fmt(spent())}</b></span><span>Residuo <b>${fmt(c.rem)}</b></span></div>
+    ${wlHtml}
+    <div class="pv-foot">Generato con FantAsta · quotazioni listone ufficiale Fantacalcio.it</div>`;
+}
+$('#btnPdf').addEventListener('click', ()=>{ buildPrint(); window.print(); });
+window.addEventListener('beforeprint', buildPrint);
+
 /* ---------- studio ---------- */
 .studio{grid-column:1/-1}
 .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--line2)}
@@ -175,6 +200,41 @@ dialog::backdrop{background:rgba(10,20,14,.5)}
 .more{display:block;width:100%;margin:8px 0 0;text-align:center}
 .res .extra{display:flex;gap:6px;align-items:center;justify-content:flex-end}
 @media (max-width:600px){.st-table{grid-template-columns:22px minmax(0,1fr) auto auto;max-height:70vh}.st-table .hide-m{display:none}}
+
+/* ---------- stampa / PDF ---------- */
+#printView{display:none}
+@media print{
+  @page{margin:14mm}
+  header,main,footer,.toast,dialog{display:none !important}
+  body{background:#fff;color:#000;font-size:12px}
+  #printView{display:block;max-width:100%}
+  .pv-h{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:10px}
+  .pv-h h1{font-size:22px;font-weight:700}
+  .pv-h .d{font-size:11px;color:#555}
+  .pv-sum{display:flex;gap:22px;margin-bottom:14px}
+  .pv-sum div{display:flex;flex-direction:column}
+  .pv-sum b{font-family:"Barlow Condensed",sans-serif;font-size:22px;font-variant-numeric:tabular-nums;line-height:1}
+  .pv-sum span{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:#555}
+  .pv-role{margin-bottom:10px;break-inside:avoid}
+  .pv-role h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;display:flex;gap:8px;align-items:center;margin:0 0 3px;padding-top:6px}
+  .pv-role h2 .chip{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .pv-role h2 .r{margin-left:auto;font-weight:500;font-size:11px;color:#555;text-transform:none;letter-spacing:0}
+  table.pv{width:100%;border-collapse:collapse}
+  table.pv td,table.pv th{padding:3px 6px;border-bottom:1px solid #ddd;text-align:left;font-variant-numeric:tabular-nums}
+  table.pv th{font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#555;font-weight:600;border-bottom:1px solid #999}
+  table.pv td.n{width:auto}
+  table.pv td.num,table.pv th.num{text-align:right;width:56px;white-space:nowrap}
+  table.pv td.team{color:#555;width:110px}
+  table.pv tr.empty td{color:#999;font-style:italic}
+  table.pv tr.tot td{border-bottom:0;border-top:1px solid #000;font-weight:700}
+  .pv-grand{display:flex;justify-content:flex-end;gap:24px;margin-top:12px;padding-top:8px;border-top:2px solid #000;font-size:14px}
+  .pv-grand b{font-variant-numeric:tabular-nums}
+  .pv-wl{margin-top:16px;break-inside:avoid}
+  .pv-wl h2{font-size:13px;letter-spacing:.06em;text-transform:uppercase;margin:0 0 4px}
+  .pv-wl ul{margin:0;padding-left:16px;columns:2;font-size:11px}
+  .pv-wl li{break-inside:avoid}
+  .pv-foot{margin-top:18px;font-size:10px;color:#777}
+}
 footer{max-width:1180px;margin:0 auto;padding:6px 18px 28px;font-size:12px;color:var(--muted)}
 </style>
 
@@ -188,6 +248,7 @@ footer{max-width:1180px;margin:0 auto;padding:6px 18px 28px;font-size:12px;color
       <div class="stat"><div class="v" id="sAvg">20</div><div class="l">Media a testa</div></div>
       <div class="stat"><div class="v" id="sMax">476</div><div class="l">Max offerta ora</div></div>
     </div>
+    <button class="iconbtn" id="btnPdf">⤓ Esporta PDF</button>
     <button class="iconbtn" id="btnSettings">⚙ Impostazioni</button>
   </div>
 </header>
@@ -227,6 +288,8 @@ footer{max-width:1180px;margin:0 auto;padding:6px 18px 28px;font-size:12px;color
   </section>
 </main>
 <footer>Listone ufficiale Fantacalcio.it (Qt.A, Qt.I, FVM, ruoli Mantra) e studio personale dal file «Fantacalcio 26/27» del socio. I dati dell'asta restano salvati in questo browser.</footer>
+
+<div id="printView"></div>
 
 <dialog id="dlg">
   <div class="dlg-h"><h2>Impostazioni asta</h2></div>
@@ -485,6 +548,31 @@ $('#btnSave').addEventListener('click', ()=>{
 $('#btnReset').addEventListener('click', ()=>{
   if(confirm('Azzerare rosa e lista obiettivi? Le impostazioni restano.')){ S.bought=[]; S.wish=[]; save(); render(); dlg.close(); toast('Asta azzerata'); }
 });
+
+/* ---------- stampa / PDF ---------- */
+function buildPrint(){
+  const c = calc(); const today = new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
+  const roles = ROLES.map(r=>{
+    const list = S.bought.filter(p=>p.role===r).sort((a,b)=>b.price-a.price);
+    const n = +S.slots[r]||0, sub = spentRole(r);
+    const rows = list.map(p=>`<tr><td class="n">${esc(p.name)}</td><td class="team">${esc(p.team||'')}</td><td class="num">${p.q||'–'}</td><td class="num">${fmt(p.price)}</td></tr>`).join('');
+    const empties = Math.max(0,n-list.length);
+    const emptyRows = empties ? `<tr class="empty"><td colspan="4">${empties} ${empties===1?'posto libero':'posti liberi'}</td></tr>` : '';
+    return `<div class="pv-role"><h2><span class="chip ${r}">${r}</span>${RNAME[r]}<span class="r">${list.length}/${n} · ${fmt(sub)} crediti</span></h2>
+      <table class="pv"><thead><tr><th>Giocatore</th><th>Squadra</th><th class="num">Qt.A</th><th class="num">Pagato</th></tr></thead>
+      <tbody>${rows}${emptyRows}<tr class="tot"><td colspan="3">Totale ${RNAME[r].toLowerCase()}</td><td class="num">${fmt(sub)}</td></tr></tbody></table></div>`;
+  }).join('');
+  const wl = S.wish.filter(w=>!S.bought.some(b=>b.key===w.key));
+  const wlHtml = wl.length ? `<div class="pv-wl"><h2>Obiettivi non ancora presi (${wl.length})</h2><ul>${ROLES.map(r=>wl.filter(w=>w.role===r)).flat().map(w=>`<li>${w.role} · ${esc(w.name)} <span style="color:#555">${esc(w.team||'')}</span>${w.plan?' · piano '+fmt(w.plan):''}</li>`).join('')}</ul></div>` : '';
+  $('#printView').innerHTML = `<div class="pv-h"><h1>FantAsta 2026/27 · La mia rosa</h1><span class="d">${today}</span></div>
+    <div class="pv-sum"><div><b>${fmt(S.budget)}</b><span>Budget</span></div><div><b>${fmt(spent())}</b><span>Spesi</span></div><div><b>${fmt(c.rem)}</b><span>Rimasti</span></div><div><b>${S.bought.length}/${totalSlots()}</b><span>Giocatori</span></div>${c.left>0?`<div><b>${fmt(c.avg)}</b><span>Media restanti</span></div>`:''}</div>
+    ${roles}
+    <div class="pv-grand"><span>Totale speso <b>${fmt(spent())}</b></span><span>Residuo <b>${fmt(c.rem)}</b></span></div>
+    ${wlHtml}
+    <div class="pv-foot">Generato con FantAsta · quotazioni listone ufficiale Fantacalcio.it</div>`;
+}
+$('#btnPdf').addEventListener('click', ()=>{ buildPrint(); window.print(); });
+window.addEventListener('beforeprint', buildPrint);
 
 /* ---------- studio ---------- */
 const F = {role:'', stars:0, fascia:0, rated:true, limit:60};
