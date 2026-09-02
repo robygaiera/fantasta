@@ -1,0 +1,434 @@
+<title>FantAsta 26/27</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#F5F7F3; --panel:#FFFFFF; --ink:#152019; --muted:#66746C; --line:#DCE3DD; --line2:#EDF1EC;
+  --accent:#1E7A4C; --accent-ink:#FFFFFF; --accent-soft:#E3F1E8;
+  --warn:#B7791F; --warn-soft:#FBF1DC; --bad:#BF3A2B; --bad-soft:#FAE3DF;
+  --P:#E3B800; --D:#2E9E5B; --C:#2F80D6; --A:#D84A3A;
+  --shadow:0 1px 2px rgba(20,32,25,.06),0 6px 20px rgba(20,32,25,.05);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#111815; --panel:#18211D; --ink:#EEF3EF; --muted:#94A39A; --line:#2A3630; --line2:#202B25;
+  --accent:#3FB477; --accent-ink:#0D1611; --accent-soft:#1B3328;
+  --warn:#E0A63B; --warn-soft:#3A2E14; --bad:#F06A5A; --bad-soft:#40201B;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3);
+}}
+:root[data-theme="dark"]{
+  --bg:#111815; --panel:#18211D; --ink:#EEF3EF; --muted:#94A39A; --line:#2A3630; --line2:#202B25;
+  --accent:#3FB477; --accent-ink:#0D1611; --accent-soft:#1B3328;
+  --warn:#E0A63B; --warn-soft:#3A2E14; --bad:#F06A5A; --bad-soft:#40201B;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px rgba(0,0,0,.3);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Barlow",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3{margin:0;font-family:"Barlow Condensed","Barlow",system-ui,sans-serif;text-wrap:balance}
+.num{font-family:"Barlow Condensed","Barlow",sans-serif;font-variant-numeric:tabular-nums}
+.tab{font-variant-numeric:tabular-nums}
+.eyebrow{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+
+/* ---------- top ---------- */
+header{position:sticky;top:0;z-index:10;background:var(--panel);border-bottom:1px solid var(--line);box-shadow:var(--shadow)}
+.head-in{max-width:1180px;margin:0 auto;padding:12px 18px;display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center}
+.brand{display:flex;align-items:baseline;gap:8px;margin-right:auto}
+.brand h1{font-size:26px;font-weight:700;letter-spacing:.01em;line-height:1}
+.brand span{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.stats{display:flex;gap:6px 22px;flex-wrap:wrap}
+.stat{display:flex;flex-direction:column;min-width:74px}
+.stat .v{font-family:"Barlow Condensed",sans-serif;font-size:32px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.stat.big .v{font-size:44px;color:var(--accent)}
+.stat.big .v.low{color:var(--warn)}
+.stat.big .v.neg{color:var(--bad)}
+.stat .l{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.iconbtn{border:1px solid var(--line);background:transparent;border-radius:8px;padding:7px 12px;font-weight:600;font-size:13px}
+.iconbtn:hover{background:var(--line2)}
+
+/* ---------- layout ---------- */
+main{max-width:1180px;margin:0 auto;padding:18px;display:grid;grid-template-columns:1.15fr .85fr;gap:18px;align-items:start}
+@media (max-width:880px){main{grid-template-columns:1fr}aside{order:-1}.stat .v{font-size:26px}.stat.big .v{font-size:34px}.head-in{padding:10px 14px;gap:8px 14px}.stat{min-width:60px}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
+.panel-h{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.panel-h h2{font-size:22px;font-weight:600}
+.panel-h .sub{color:var(--muted);font-size:13px;margin-left:auto}
+.panel-b{padding:12px 16px 16px}
+
+/* ---------- suggestion strip ---------- */
+.sugg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--line2)}
+@media (max-width:520px){.sugg{grid-template-columns:repeat(2,1fr)}}
+.sugg .cell{display:flex;flex-direction:column;gap:2px;padding:8px 10px;background:var(--panel);border-radius:8px;border-left:4px solid var(--line)}
+.sugg .cell.P{border-color:var(--P)}.sugg .cell.D{border-color:var(--D)}.sugg .cell.C{border-color:var(--C)}.sugg .cell.A{border-color:var(--A)}
+.sugg .cell .t{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;display:flex;justify-content:space-between}
+.sugg .cell .v{font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.sugg .cell .v small{font-size:13px;font-weight:500;color:var(--muted);font-family:"Barlow",sans-serif;margin-left:4px}
+.sugg .cell .d{font-size:12px;color:var(--muted)}
+.hint{padding:8px 16px 0;font-size:13px;color:var(--muted)}
+.hint b{color:var(--ink)}
+
+/* ---------- roster ---------- */
+.role-block{margin-top:10px}
+.role-block h3{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;padding:6px 0;color:var(--muted)}
+.role-block h3 .cnt{margin-left:auto;font-family:"Barlow Condensed",sans-serif;font-size:16px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.role-block h3 .spent{font-size:12px;font-weight:500;letter-spacing:0;text-transform:none}
+.chip{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:6px;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:13px;color:#fff;flex:none}
+.chip.P{background:var(--P);color:#1a1400}.chip.D{background:var(--D)}.chip.C{background:var(--C)}.chip.A{background:var(--A)}
+.row{display:grid;grid-template-columns:22px 1fr auto auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--line2)}
+.row .n{font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .n small{color:var(--muted);font-weight:400;margin-left:6px}
+.row .price{width:64px;text-align:right;padding:4px 6px;border:1px solid transparent;border-radius:6px;background:transparent;font-family:"Barlow Condensed",sans-serif;font-size:19px;font-weight:600;font-variant-numeric:tabular-nums}
+.row .price:hover,.row .price:focus{border-color:var(--line);background:var(--bg);outline:none}
+.row.empty{color:var(--muted);font-style:italic}
+.row.empty .slot{height:6px;border-radius:3px;background:var(--line2);border:1px dashed var(--line)}
+.x{border:0;background:transparent;color:var(--muted);width:26px;height:26px;border-radius:6px;font-size:16px;line-height:1}
+.x:hover{background:var(--bad-soft);color:var(--bad)}
+.buy{border:0;background:var(--accent);color:var(--accent-ink);font-weight:600;padding:5px 10px;border-radius:6px;font-size:13px}
+.buy:hover{filter:brightness(1.08)}
+.ghost{border:1px solid var(--line);background:transparent;padding:5px 10px;border-radius:6px;font-size:13px;font-weight:600}
+.ghost:hover{background:var(--line2)}
+
+/* ---------- search ---------- */
+.search{position:relative}
+.search input{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-size:15px}
+.search input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.results{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--panel);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);max-height:320px;overflow:auto;z-index:20}
+.results:empty{display:none}
+.res{display:grid;grid-template-columns:22px 1fr auto;gap:10px;align-items:center;padding:8px 12px;border-top:1px solid var(--line2);cursor:pointer}
+.res:first-child{border-top:0}
+.res:hover,.res.sel{background:var(--accent-soft)}
+.res .n small{color:var(--muted);margin-left:6px}
+.res .q{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:17px;color:var(--muted);font-variant-numeric:tabular-nums}
+.res.new{color:var(--accent);font-weight:600}
+.res.new .roles{display:flex;gap:4px}
+.res.new .roles button{border:1px solid var(--line);background:var(--panel);border-radius:5px;padding:2px 7px;font-size:12px;font-weight:600}
+.res.new .roles button:hover{background:var(--accent-soft)}
+
+/* ---------- picked ---------- */
+.picked{margin-top:10px;padding:12px;border:1px solid var(--accent);border-radius:10px;background:var(--accent-soft);display:grid;grid-template-columns:1fr auto;gap:10px 14px;align-items:center}
+.picked .who{display:flex;align-items:center;gap:8px;font-weight:600;font-size:16px}
+.picked .who small{color:var(--muted);font-weight:400}
+.picked .meta{font-size:13px;color:var(--muted);grid-column:1/-1}
+.picked .meta b{color:var(--ink)}
+.picked .act{display:flex;gap:8px;align-items:center;flex-wrap:wrap;grid-column:1/-1}
+.picked input{width:84px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font-family:"Barlow Condensed",sans-serif;font-size:22px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.picked .buy{padding:9px 14px;font-size:14px}
+.picked .ghost{padding:8px 12px}
+.picked .x{margin-left:auto}
+
+/* ---------- wishlist ---------- */
+.wl .row{grid-template-columns:22px 1fr auto auto auto}
+.wl .row .q{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.wl .row .price{width:56px}
+.wl-foot{display:flex;justify-content:space-between;gap:10px;padding-top:10px;margin-top:6px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+.wl-foot b{color:var(--ink)}
+.wl-foot .over{color:var(--bad);font-weight:600}
+.empty-msg{color:var(--muted);font-size:14px;padding:14px 0;text-align:center}
+
+/* ---------- settings ---------- */
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--panel);color:var(--ink);padding:0;width:min(520px,94vw);box-shadow:var(--shadow)}
+dialog::backdrop{background:rgba(10,20,14,.5)}
+.dlg-h{padding:16px 20px;border-bottom:1px solid var(--line)}
+.dlg-h h2{font-size:24px;font-weight:600}
+.dlg-b{padding:16px 20px;display:grid;gap:14px}
+.field{display:grid;gap:4px}
+.field label{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.field input{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font-family:"Barlow Condensed",sans-serif;font-size:20px;font-weight:600;font-variant-numeric:tabular-nums;width:100%}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.grid4 .field label{display:flex;align-items:center;gap:6px}
+.dlg-f{padding:14px 20px;border-top:1px solid var(--line);display:flex;gap:8px;justify-content:flex-end;align-items:center}
+.dlg-f .danger{margin-right:auto;color:var(--bad);border-color:transparent}
+.dlg-f .danger:hover{background:var(--bad-soft)}
+.note{font-size:13px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-weight:500;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+.toast.on{opacity:1}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+footer{max-width:1180px;margin:0 auto;padding:6px 18px 28px;font-size:12px;color:var(--muted)}
+</style>
+
+<header>
+  <div class="head-in">
+    <div class="brand"><h1>FantAsta</h1><span>Serie A 2026/27</span></div>
+    <div class="stats">
+      <div class="stat big"><div class="v" id="sRem">500</div><div class="l">Crediti rimasti</div></div>
+      <div class="stat"><div class="v" id="sSpent">0</div><div class="l">Spesi</div></div>
+      <div class="stat"><div class="v" id="sSlots">0/25</div><div class="l">Giocatori</div></div>
+      <div class="stat"><div class="v" id="sAvg">20</div><div class="l">Media a testa</div></div>
+      <div class="stat"><div class="v" id="sMax">476</div><div class="l">Max offerta ora</div></div>
+    </div>
+    <button class="iconbtn" id="btnSettings">⚙ Impostazioni</button>
+  </div>
+</header>
+
+<main>
+  <section class="panel">
+    <div class="panel-h"><h2>La mia rosa</h2><span class="sub" id="rosterSub"></span></div>
+    <div class="sugg" id="sugg"></div>
+    <div class="hint" id="hint"></div>
+    <div class="panel-b" id="roster"></div>
+  </section>
+
+  <aside class="panel">
+    <div class="panel-h"><h2>Cerca e compra</h2><span class="sub" id="dbCount"></span></div>
+    <div class="panel-b">
+      <div class="search">
+        <input id="q" type="search" placeholder="Nome giocatore o squadra…" autocomplete="off" spellcheck="false">
+        <div class="results" id="results"></div>
+      </div>
+      <div id="picked"></div>
+    </div>
+    <div class="panel-h"><h2>Lista obiettivi</h2><span class="sub" id="wlSub"></span></div>
+    <div class="panel-b wl" id="wishlist"></div>
+  </aside>
+</main>
+<footer>Quotazioni da fantacalcio-online.com aggiornate al 2 settembre 2026. I dati restano salvati in questo browser.</footer>
+
+<dialog id="dlg">
+  <div class="dlg-h"><h2>Impostazioni asta</h2></div>
+  <div class="dlg-b">
+    <div class="field"><label for="fBudget">Crediti totali</label><input id="fBudget" type="number" min="1" step="1"></div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:6px">Giocatori per ruolo (num. max)</div>
+      <div class="grid4">
+        <div class="field"><label><span class="chip P">P</span>Portieri</label><input id="fP" type="number" min="0" step="1"></div>
+        <div class="field"><label><span class="chip D">D</span>Difensori</label><input id="fD" type="number" min="0" step="1"></div>
+        <div class="field"><label><span class="chip C">C</span>Centrocamp.</label><input id="fC" type="number" min="0" step="1"></div>
+        <div class="field"><label><span class="chip A">A</span>Attaccanti</label><input id="fA" type="number" min="0" step="1"></div>
+      </div>
+    </div>
+    <div>
+      <div class="eyebrow" style="margin-bottom:6px">Quota budget per ruolo (%)</div>
+      <div class="grid4">
+        <div class="field"><label>P</label><input id="fpP" type="number" min="0" max="100" step="1"></div>
+        <div class="field"><label>D</label><input id="fpD" type="number" min="0" max="100" step="1"></div>
+        <div class="field"><label>C</label><input id="fpC" type="number" min="0" max="100" step="1"></div>
+        <div class="field"><label>A</label><input id="fpA" type="number" min="0" max="100" step="1"></div>
+      </div>
+      <div class="note" id="pctNote">Serve solo per il suggerimento per ruolo. La media generale usa sempre tutti i crediti rimasti.</div>
+    </div>
+  </div>
+  <div class="dlg-f">
+    <button class="ghost danger" id="btnReset">Azzera asta</button>
+    <button class="ghost" id="btnCancel">Annulla</button>
+    <button class="buy" id="btnSave">Salva</button>
+  </div>
+</dialog>
+<div class="toast" id="toast"></div>
+
+<script>
+const DB = [["P","Svilar Mile","Roma",23,"POR"],["P","Carnesecchi Marco","Atalanta",21,"POR"],["P","Maignan Mike","Milan",20,"POR"],["P","Martinez Josep","Inter",20,"POR"],["P","Vicario Guglielmo","Juventus",20,"POR"],["P","Butez Jean","Como",19,"POR"],["P","Meret Alex","Napoli",15,"POR"],["P","Skorupski Lukasz","Bologna",14,"POR"],["P","Caprile Elia","Cagliari",13,"POR"],["P","De Gea David","Fiorentina",13,"POR"],["P","Falcone Wladimiro","Lecce",12,"POR"],["P","Mandas Christos","Lazio",12,"POR"],["P","Okoye Maduka","Udinese",12,"POR"],["P","Bijlow Justin","Genoa",10,"POR"],["P","Perri Lucas","Torino",10,"POR"],["P","Muric Arijanet","Sassuolo",9,"POR"],["P","Stankovic Filip","Venezia",9,"POR"],["P","Lynch Sanchez Robert","Como",7,"POR"],["P","Milinkovic Vanja","Napoli",7,"POR"],["P","Palmisani Lorenzo","Frosinone",7,"POR"],["P","Motta Edoardo","Lazio",5,"POR"],["P","Paleari Alberto","Torino",5,"POR"],["P","Thiam Demba","Monza",5,"POR"],["P","Daffara Giovanni","Parma",4,"POR"],["P","Desplanches Sebastiano","Frosinone",3,"POR"],["P","Provedel Ivan","Inter",3,"POR"],["P","Corvi Edoardo","Parma",2,"POR"],["P","Montipo&#039; Lorenzo","Venezia",2,"POR"],["P","Mrozek Bartosz","Udinese",2,"POR"],["P","Terracciano Pietro","Milan",2,"POR"],["P","Audero Emil","Como",1,"POR"],["P","Bleve Marco","Lecce",1,"POR"],["P","Borbei Alexandru","Lecce",1,"POR"],["P","Christensen Oliver","Fiorentina",1,"POR"],["P","Contini Nikita","Napoli",1,"POR"],["P","De Marzi Giorgio Giorgio","Roma",1,"POR"],["P","Di Gennaro Raffaele","Inter",1,"POR"],["P","Furlanetto Alessio","Lazio",1,"POR"],["P","Ghidotti Simone","Parma",1,"POR"],["P","Gollini Pierluigi","Roma",1,"POR"],["P","Grabara Kamil","Juventus",1,"POR"],["P","Grandi Matteo","Venezia",1,"POR"],["P","Happonen Ukko","Bologna",1,"POR"],["P","Israel Franco","Torino",1,"POR"],["P","Lezzerini Luca","Fiorentina",1,"POR"],["P","Lolic Eldin","Frosinone",1,"POR"],["P","Mascardi Diego","Torino",1,"POR"],["P","Padelli Daniele","Udinese",1,"POR"],["P","Penev Plamen","Lecce",1,"POR"],["P","Pessina Massimo","Bologna",1,"POR"],["P","Piana Edoardo","Udinese",1,"POR"],["P","Pinsoglio Carlo","Juventus",1,"POR"],["P","Pisseri Matteo","Frosinone",1,"POR"],["P","Pozzi Alessio","Venezia",1,"POR"],["P","Radunovic Boris","Cagliari",1,"POR"],["P","Renzetti Davide","Lazio",1,"POR"],["P","Rossi Francesco","Atalanta",1,"POR"],["P","Russo Alessandro","Sassuolo",1,"POR"],["P","Satalino Giacomo","Sassuolo",1,"POR"],["P","Sherri Alen","Cagliari",1,"POR"],["P","Siviero Lapo","Torino",1,"POR"],["P","Sommariva Daniele","Genoa",1,"POR"],["P","Sportiello Marco","Atalanta",1,"POR"],["P","Stolz Franz","Genoa",1,"POR"],["P","Strajnar Aljaž","Monza",1,"POR"],["P","Tornqvist Noel","Monza",1,"POR"],["P","Torriani Lorenzo","Milan",1,"POR"],["P","Turati Stefano","Sassuolo",1,"POR"],["P","Vasquez Devis","Roma",1,"POR"],["P","Vigorito Mauro","Como",1,"POR"],["P","Vismara Paolo","Atalanta",1,"POR"],["D","Dimarco Federico","Inter",30,"CS"],["D","Bremer Gleison","Juventus",24,"DC"],["D","Wesley França","Roma",22,"CD"],["D","Akanji Manuel","Inter",21,"DC"],["D","Bastoni Alessandro","Inter",21,"DC"],["D","Mancini Gianluca","Roma",21,"DC"],["D","Molina Nahuel","Roma",21,"CD"],["D","Bisseck Yann","Inter",20,"DC"],["D","Pavlovic Strahinja","Milan",20,"DC"],["D","Rrahmani Amir","Napoli",20,"DC"],["D","Di Lorenzo Giovanni","Napoli",19,"DD"],["D","Kalulu Pierre","Juventus",19,"DC"],["D","Ndicka Evan","Roma",18,"DC"],["D","Solet Oumar","Udinese",18,"DC"],["D","Spence Djed","Inter",17,"CD"],["D","Stones John","Inter",17,"DC"],["D","Gila Mario","Milan",16,"DC"],["D","Scalvini Giorgio","Atalanta",16,"DC"],["D","Cambiaso Andrea","Juventus",15,"CS"],["D","Ostigard Leo","Genoa",15,"DC"],["D","Ramon Jacobo","Como",15,"DC"],["D","Chalobah Trevoh","Como",14,"DC"],["D","Hermoso Mario","Roma",14,"DC"],["D","Kamara Hassane","Udinese",13,"CS"],["D","Tiago Gabriel Coelho","Lecce",13,"DC"],["D","Vasquez Johan","Genoa",13,"DC"],["D","Zappacosta Davide","Atalanta",13,"DD"],["D","Bartesaghi Davide","Milan",12,"CS"],["D","Buongiorno Alessandro","Napoli",12,"DC"],["D","Comuzzo Pietro","Torino",12,"DC"],["D","Dodo -","Fiorentina",12,"CD"],["D","Doekhi Danilho","Lazio",12,"DC"],["D","Gabbia Matteo","Milan",12,"DC"],["D","Hien Isak","Atalanta",12,"DC"],["D","Kempf Marc","Como",12,"DC"],["D","Miranda Juan","Bologna",12,"DS"],["D","Spinazzola Leonardo","Napoli",12,"CS"],["D","Valeri Emanuele","Parma",12,"CS"],["D","Valle Álex","Como",12,"DS"],["D","Bracaglia Gabriele","Frosinone",11,"DS"],["D","Jimenez Alex","Fiorentina",11,"DS"],["D","Lucumi Jhon","Juventus",11,"DC"],["D","Mina Yerry","Cagliari",11,"DC"],["D","Badiashile Mukinayi Benoît","Napoli",10,"DC"],["D","Carlos Augusto -","Inter",10,"CS"],["D","Celik Zeki","Juventus",10,"DD"],["D","Coco Saul","Torino",10,"DC"],["D","Couto Yan","Como",10,"DD"],["D","Del Prato Enrico","Parma",10,"DD"],["D","Dragusin Radu","Fiorentina",10,"DC"],["D","Holm Emil","Bologna",10,"DD"],["D","Ismajli Ardian","Torino",10,"DC"],["D","Koulierakis Konstantinos","Roma",10,"DC"],["D","Marusic Adam","Lazio",10,"DD"],["D","Nuno Tavares -","Lazio",10,"DS"],["D","Pedraza Alfonso","Lazio",10,"DS"],["D","Romagnoli Alessio","Lazio",10,"DC"],["D","Theate Arthur","Bologna",10,"DC"],["D","Tomori Fikayo","Milan",10,"DC"],["D","Valdepenas Víctor","Fiorentina",10,"DS"],["D","Vojvoda Mergim","Udinese",10,"CD"],["D","Zortea Nadir","Bologna",10,"DD"],["D","Belghali Rafik","Torino",9,"CD"],["D","Bellanova Raoul","Atalanta",9,"DD"],["D","Bernasconi Lorenzo","Atalanta",9,"DS"],["D","Beukema Sam","Napoli",9,"DC"],["D","Gallo Antonino","Lecce",9,"DS"],["D","Heggem Torbjørn","Bologna",9,"DC"],["D","Idzes Jay","Sassuolo",9,"DC"],["D","Kristensen Thomas","Atalanta",9,"DC"],["D","Leysen Fedde","Sassuolo",9,"DC"],["D","Marcandalli Alessandro","Genoa",9,"DC"],["D","Obrador Rafa","Sassuolo",9,"DS"],["D","Pavard Benjamin","Inter",9,"DD"],["D","Rensch Devyne","Roma",9,"DD"],["D","Sutalo Josip","Lazio",9,"DC"],["D","Beidi Francesco","Cagliari",8,"DC"],["D","Bella-Kotchap Armel","Venezia",8,"DC"],["D","Correia Thierry","Venezia",8,"DD"],["D","Doig Josh","Sassuolo",8,"DS"],["D","Favasuli Costantino","Napoli",8,"CS"],["D","Ghilardi Daniele","Roma",8,"DD"],["D","Kabasele Christian","Udinese",8,"DC"],["D","Kelly Lloyd","Juventus",8,"DS"],["D","Mangas Ricardo","Monza",8,"DS"],["D","Monterisi Ilario","Frosinone",8,"DC"],["D","Obert Adam","Cagliari",8,"DC"],["D","Olivera Mathías","Napoli",8,"DS"],["D","Sugawara Yukinari","Cagliari",8,"DD"],["D","Veiga Danilo","Lecce",8,"DD"],["D","Viery Viery","Fiorentina",8,"DC"],["D","Walukiewicz Sebastian","Sassuolo",8,"DC"],["D","Balerdi Leonardo","Roma",7,"DC"],["D","De Winter Koni","Milan",7,"DC"],["D","Gaspar Kialonda","Lecce",7,"DC"],["D","Kaiki Bruno","Como",7,"DS"],["D","Kolasinac Sead","Atalanta",7,"DS"],["D","Kossounou Odilon","Atalanta",7,"DC"],["D","Odenthal Cas","Sassuolo",7,"DC"],["D","Parisi Fabiano","Fiorentina",7,"CD"],["D","Pongracic Marin","Fiorentina",7,"DC"],["D","Ranieri Luca","Fiorentina",7,"DC"],["D","Smolcic Ivan","Como",7,"DD"],["D","Valenti Lautaro","Parma",7,"DC"],["D","Vitik Martin","Bologna",7,"DC"],["D","Ze Pedro da","Cagliari",7,"DC"],["D","Bertola Nicolo","Udinese",6,"DC"],["D","Birindelli Samuele","Monza",6,"CD"],["D","Britschgi Sascha","Parma",6,"DD"],["D","Calvani Gabriele","Frosinone",6,"DC"],["D","Carboni Andrea","Monza",6,"DC"],["D","Comert Eray","Torino",6,"DC"],["D","Fortini Niccolo","Torino",6,"CS"],["D","Gatti Federico","Juventus",6,"DC"],["D","Hainaut Antoine","Venezia",6,"DD"],["D","Haps Ridgeciano","Venezia",6,"CS"],["D","Jesus Juan","Venezia",6,"DC"],["D","Joao Mario Neto","Fiorentina",6,"DD"],["D","Kofler Raphael","Cagliari",6,"DC"],["D","Moreno Matías","Venezia",6,"DC"],["D","Provstgaard Oliver","Lazio",6,"DC"],["D","Rodriguez Juan","Cagliari",6,"DC"],["D","Siebert Jamil","Lecce",6,"DC"],["D","Tchato Mbiayi Enzo","Frosinone",6,"DD"],["D","Terracciano Filippo","Milan",6,"DD"],["D","Arizala Juan","Udinese",5,"CS"],["D","Cande Fali","Sassuolo",5,"DC"],["D","Cittadini Giorgio","Frosinone",5,"DC"],["D","Dossena Alberto","Como",5,"DC"],["D","Drameh Cody","Genoa",5,"DD"],["D","Ebosse Enzo","Udinese",5,"DS"],["D","Estupinan Pervis","Milan",5,"CS"],["D","Floriani Mussolini Romano","Lazio",5,"CD"],["D","Halhal Redouane","Venezia",5,"DC"],["D","Helland Eivind","Bologna",5,"DC"],["D","Kambwala Willy","Como",5,"DC"],["D","Lazzari Manuel","Lazio",5,"DD"],["D","Lucchesi Lorenzo","Monza",5,"DC"],["D","Mitaj Mario","Genoa",5,"DS"],["D","Pellegrini Luca","Lazio",5,"DS"],["D","Schingtienne Joël","Venezia",5,"DC"],["D","Terzic Aleksa","Frosinone",5,"DS"],["D","Troilo Mariano","Parma",5,"DC"],["D","Zanoli Alessandro","Udinese",5,"CD"],["D","Alhassane Abdel","Bologna",4,"DS"],["D","Aurelio Giuseppe","Cagliari",4,"DS"],["D","Biraghi Cristiano","Torino",4,"CS"],["D","Cabal Juan","Juventus",4,"CS"],["D","Casale Nicolò","Bologna",4,"DC"],["D","Franjić Bartol","Venezia",4,"DS"],["D","Goglichidze Saba","Monza",4,"DD"],["D","Idrissi Riyad","Cagliari",4,"CS"],["D","Marianucci Luca","Napoli",4,"DD"],["D","Marin Rafa","Napoli",4,"DC"],["D","Ndiaye Abdoulaye","Parma",4,"DC"],["D","Oyono Anthony","Frosinone",4,"DD"],["D","Palma Matteo","Udinese",4,"DC"],["D","Patric -","Lazio",4,"DC"],["D","Puczka David","Genoa",4,"DS"],["D","Sabelli Stefano","Genoa",4,"CD"],["D","Sagrado Richie","Venezia",4,"CD"],["D","Sverko Marin","Venezia",4,"DC"],["D","Van Der Brempt Ignace","Sassuolo",4,"DD"],["D","Akpoguma Kevin","Frosinone",3,"DC"],["D","Bakoune Adam","Monza",3,"CD"],["D","Diawara Sankhoun","Milan",3,"DC"],["D","Gigot Samuel","Lazio",3,"DC"],["D","Goldaniga Edoardo","Como",3,"DC"],["D","Jean Gaby","Lecce",3,"DC"],["D","Kouadio Eddy","Monza",3,"DC"],["D","Lulli Emanuele","Roma",3,"CD"],["D","Mazzocchi Pasquale","Venezia",3,"DD"],["D","Otoa Sebastian","Genoa",3,"DC"],["D","Abankwah James","Udinese",2,"DC"],["D","Antov Valentin","Monza",2,"DC"],["D","Carboni Franco","Parma",2,"DS"],["D","Cinquegrano Simone","Sassuolo",2,"CD"],["D","De Silvestri Lorenzo","Bologna",2,"DD"],["D","Dembele Ali","Lecce",2,"CD"],["D","Drobnic Dominik","Parma",2,"DC"],["D","Kouassi Owen","Lecce",2,"DC"],["D","Maye Yvan","Monza",2,"DC"],["D","Mlacic Branimir","Udinese",2,"DC"],["D","Ndaba Corrie","Lecce",2,"DS"],["D","Pieragnolo Edoardo","Sassuolo",2,"DS"],["D","Rugani Daniele","Juventus",2,"DC"],["D","Addo Vernon","Lecce",1,"DS"],["D","Amey Wisdom","Frosinone",1,"DC"],["D","Fayed Omar","Frosinone",1,"DC"],["D","Gomes Alejandro","Venezia",1,"DC"],["D","Ligue Calixte","Venezia",1,"DS"],["D","Paz Yeferson","Sassuolo",1,"DD"],["D","Ziolkowski Jan","Monza",1,"DC"],["C","Paz Nico","Como",42,"TQ"],["C","Calhanoglu Hakan","Inter",40,"CC"],["C","Mctominay Scott","Napoli",37,"CC"],["C","Pulisic Christian","Milan",37,"AD"],["C","Baturina Martin","Como",33,"TQ"],["C","Orsolini Riccardo","Bologna",33,"AD"],["C","Rabiot Adrien","Milan",32,"CC"],["C","De Bruyne Kevin","Napoli",31,"TQ"],["C","Zaniolo Nicolò","Udinese",28,"TQ"],["C","Barella Nicolò","Inter",27,"CC"],["C","Zaccagni Mattia","Lazio",27,"TQ"],["C","Da Cunha Lucas","Como",26,"AS"],["C","Mora Carvalho Rodrigo","Roma",26,"TQ"],["C","Mckennie Weston","Juventus",24,"CC"],["C","Vlasic Nikola","Torino",24,"TQ"],["C","Gudmundsson Albert","Lazio",23,"AD"],["C","Atta Arthur","Fiorentina",22,"CC"],["C","Conceicao Fernandes","Juventus",22,"AS"],["C","Mastantuono Franco","Fiorentina",22,"TQ"],["C","Ederson -","Atalanta",21,"TQ"],["C","Modric Luka","Milan",21,"CC"],["C","Samardzic Lazar","Atalanta",21,"TQ"],["C","Zielinski Piotr","Inter",21,"CC"],["C","Kone Manu","Roma",20,"CC"],["C","Rodriguez Jesús","Como",20,"AS"],["C","Rowe Jonathan","Atalanta",20,"AS"],["C","Taylor Kenneth","Lazio",20,"CC"],["C","Alajbegovic Kerim-Sam","Juventus",19,"AS"],["C","Ekkelenkamp Jurgen","Udinese",19,"TQ"],["C","Pellegrini Lorenzo","Roma",19,"CC"],["C","Politano Matteo","Napoli",19,"AD"],["C","Anguissa André","Napoli",18,"CC"],["C","Da Silva Moreira Diego","Milan",18,"AS"],["C","Jones Curtis","Inter",18,"CC"],["C","Saelemaekers Alexis","Milan",18,"CD"],["C","Baldanzi Tommaso","Genoa",17,"TQ"],["C","Kessie Franck","Atalanta",17,"CC"],["C","Perrone Maximo","Como",17,"CC"],["C","Sucic Petar","Inter",17,"CC"],["C","Thorstvedt Kristian","Sassuolo",17,"TQ"],["C","Thuram Khéphren","Juventus",17,"CC"],["C","Casadei Cesare","Torino",16,"TQ"],["C","Frattesi Davide","Lazio",16,"CC"],["C","Hutchinson Omari","Milan",16,"AD"],["C","Pasalic Mario","Atalanta",16,"CC"],["C","Bernardeschi Federico","Bologna",15,"CD"],["C","Colpani Andrea","Monza",15,"CC"],["C","Cristante Bryan","Roma",15,"CC"],["C","Elmas Eljif","Atalanta",15,"CC"],["C","Fagioli Nicolo","Fiorentina",15,"CC"],["C","Isaksen Gustav","Lazio",15,"AC"],["C","Lobotka Stanislav","Napoli",15,"CC"],["C","Locatelli Manuel","Juventus",15,"CC"],["C","Mandragora Rolando","Torino",15,"CC"],["C","Odgaard Jens","Bologna",15,"AD"],["C","Vergara Antonio","Napoli",15,"TQ"],["C","Volpato Cristian","Sassuolo",15,"TQ"],["C","Bernabe Adrian","Parma",14,"CC"],["C","Cambiaghi Nicolo","Bologna",14,"AS"],["C","Cancellieri Matteo","Lazio",14,"AD"],["C","Ferguson Lewis","Bologna",14,"TQ"],["C","Gaetano Gianluca","Atalanta",14,"CC"],["C","Schmid Romano","Frosinone",14,"TQ"],["C","Sow Djibril","Genoa",14,"CC"],["C","Calo Giacomo","Frosinone",13,"CC"],["C","Caqueret Maxence","Como",13,"CC"],["C","Chukwueze Samuel","Milan",13,"AD"],["C","Kone Ismaël","Sassuolo",13,"CC"],["C","Pisilli Niccolo","Roma",13,"CC"],["C","Unai Gomez Etxebarria","Udinese",13,"TQ"],["C","Zalewski Nicola","Atalanta",13,"TQ"],["C","Frendrup Morten","Genoa",12,"CC"],["C","Karlstrom Jesper","Udinese",12,"CC"],["C","Koopmeiners Teun","Juventus",12,"CC"],["C","Mkhitaryan Henrikh","Inter",12,"AS"],["C","Ndour Cher","Fiorentina",12,"CC"],["C","Oristanio Gaetano","Torino",12,"TQ"],["C","Pessina Matteo","Monza",12,"CC"],["C","Pierotti Santiago","Lecce",12,"AD"],["C","Piotrowski Jakub","Udinese",12,"CC"],["C","Adopo Ndary","Cagliari",11,"CC"],["C","Busio Gianluca","Venezia",11,"CC"],["C","Diouf Andy","Inter",11,"CC"],["C","Fazzini Jacopo","Cagliari",11,"TQ"],["C","Matic Nemanja","Sassuolo",11,"CC"],["C","Pobega Tommaso","Bologna",11,"CC"],["C","Rovella Nicolo","Lazio",11,"CC"],["C","Sarr Pape","Juventus",11,"CC"],["C","Zhegrova Edon","Juventus",11,"AD"],["C","Addai Jayden","Como",10,"AD"],["C","Basic Toma","Venezia",10,"CC"],["C","Coulibaly Lassana","Lecce",10,"CC"],["C","De Roon Marten","Roma",10,"CC"],["C","Ellertsson Mikael","Genoa",10,"CC"],["C","Gandelman Omri","Lecce",10,"CC"],["C","Gonzalez Nicolas","Juventus",10,"AS"],["C","Jashari Ardon","Milan",10,"CC"],["C","Keita Mandela","Parma",10,"CC"],["C","Liberali Mattia","Como",10,"AD"],["C","Luis Henrique de","Inter",10,"AS"],["C","Mbangula Samuel","Bologna",10,"AS"],["C","Milla Luis","Como",10,"CC"],["C","Nicolussi Caviglia Hans","Parma",10,"CC"],["C","Oulai Christ","Fiorentina",10,"CC"],["C","Perez Kike","Venezia",10,"TQ"],["C","Traore Hamed","Genoa",10,"TQ"],["C","Winks Harry","Cagliari",10,"CC"],["C","Akinsanmiro Ebenezer","Monza",9,"CC"],["C","Dele-Bashiru Fisayo","Lazio",9,"TQ"],["C","Felici Mattia","Cagliari",9,"CS"],["C","Gineitis Gvidas","Torino",9,"CC"],["C","Loftus-Cheek Ruben","Milan",9,"TQ"],["C","Moro Nikola","Bologna",9,"CC"],["C","Njie Alieu","Fiorentina",9,"AS"],["C","Romano Alessandro","Cagliari",9,"CC"],["C","Zerbin Alessio","Frosinone",9,"AS"],["C","Adzic Vasilije","Sassuolo",8,"TQ"],["C","Amorim Alex","Genoa",8,"CC"],["C","Bakola Darryl","Sassuolo",8,"TQ"],["C","Berisha Medon","Lecce",8,"CC"],["C","Cacciamani Alessio","Torino",8,"CS"],["C","Cataldi Danilo","Lazio",8,"CC"],["C","Dominguez Benjamín","Sassuolo",8,"AS"],["C","Fabbian Giovanni","Parma",8,"TQ"],["C","Fitz-Jim Kian","Torino",8,"CC"],["C","Grillitsch Florian","Frosinone",8,"CC"],["C","Ilkhan Emirhan","Torino",8,"CC"],["C","Koutsoupias Ilias","Frosinone",8,"CC"],["C","Meichtry Franz-Ethan","Genoa",8,"CC"],["C","Sohm Simon","Venezia",8,"CC"],["C","Toure Idrissa","Monza",8,"CD"],["C","Almqvist Pontus","Parma",7,"AD"],["C","Amondarain Mikel","Bologna",7,"CC"],["C","Bondo Warren","Milan",7,"CC"],["C","Brescianini Marco","Fiorentina",7,"CC"],["C","Cichella Matteo","Frosinone",7,"CC"],["C","Douglas Luiz -","Juventus",7,"CC"],["C","Fadera Alieu","Cagliari",7,"AS"],["C","Folorunsho Michael","Monza",7,"TQ"],["C","Gilmour Billy","Napoli",7,"CC"],["C","Messias Junior","Genoa",7,"AD"],["C","Miller Lennon","Udinese",7,"CC"],["C","Monteiro Joel","Lecce",7,"AD"],["C","Ngom Oumar","Lecce",7,"CC"],["C","Ricci Samuele","Como",7,"CC"],["C","Sulemana Ibrahim","Sassuolo",7,"CC"],["C","Cisse Alphadjo","Milan",6,"AS"],["C","Ciurria Patrick","Monza",6,"AD"],["C","Colombo Leonardo","Monza",6,"CC"],["C","Fini Seydou","Frosinone",6,"AD"],["C","Gagliardini Roberto","Cagliari",6,"CC"],["C","Gelli Francesco","Frosinone",6,"TQ"],["C","Lovric Sandi","Udinese",6,"CC"],["C","Maleh Youssef","Lecce",6,"CC"],["C","Masini Patrizio","Frosinone",6,"CC"],["C","Mazzitelli Luca","Como",6,"CC"],["C","Musah Yunus","Milan",6,"CC"],["C","Ordonez Christian","Parma",6,"CC"],["C","Stankovic Aleksandar","Inter",6,"CC"],["C","Venturino Lorenzo","Genoa",6,"AD"],["C","Aboukhlal Zakaria","Torino",5,"AD"],["C","Comotto Christian","Milan",5,"CC"],["C","Deiola Alessandro","Cagliari",5,"CC"],["C","Duncan Alfred","Venezia",5,"CC"],["C","Gorter Olaf","Lecce",5,"CC"],["C","Hasa Luis","Frosinone",5,"TQ"],["C","Helgason Thorir","Venezia",5,"CC"],["C","Lipani Luca","Sassuolo",5,"CC"],["C","Salah-Eddine Anass","Roma",5,"CS"],["C","Anjorin Tino","Torino",4,"TQ"],["C","Belahyane Reda","Lazio",4,"CC"],["C","Boloca Daniel","Sassuolo",4,"CC"],["C","Chakvetadze Giorgi","Udinese",4,"TQ"],["C","Diallo Thiao Ousmane","Parma",4,"TQ"],["C","El Azzouzi Oussama","Bologna",4,"CC"],["C","Forson Omari","Monza",4,"AS"],["C","Ilic Ivan","Lecce",4,"CC"],["C","Massolin Yanis","Inter",4,"CC"],["C","Zarraga Oier","Udinese",4,"CC"],["C","Ciervo Riccardo","Cagliari",3,"AS"],["C","Cremaschi Benjamín","Parma",3,"CC"],["C","Foe Ondoa Manga","Monza",3,"TQ"],["C","Ghion Andrea","Sassuolo",3,"CC"],["C","Kone Ben","Frosinone",3,"TQ"],["C","Bakker Mitchel","Atalanta",2,"CS"],["C","Braunoder Matthias","Como",2,"CC"],["C","Fofana Sadik","Lecce",2,"CC"],["C","Galazzi Nicolas","Monza",2,"AD"],["C","Iannoni Edoardo","Sassuolo",2,"CC"],["C","Kaba Mohamed","Lecce",2,"CC"],["C","Luongo Andrea","Torino",2,"TQ"],["C","Mout Mathis","Monza",2,"AC"],["C","Rui Modesto Muati","Udinese",2,"CD"],["C","Akarakiri Demi","Cagliari",1,"CC"],["C","Cavuoti Nicolo","Cagliari",1,"TQ"],["C","Dabo Lamine","Venezia",1,"CC"],["C","Dagasso Matteo","Venezia",1,"CC"],["C","El Azzouzi Anouar","Frosinone",1,"CC"],["C","Farcomeni Valerio","Lazio",1,"CC"],["C","Galassi Bruno","Lazio",1,"CC"],["C","Konate Abdou-Salam","Parma",1,"CC"],["C","Kovac Niko","Lecce",1,"CC"],["C","Laerke Hjalte","Lecce",1,"AD"],["C","Lahdo Adrian","Como",1,"CC"],["C","Liteta Joseph","Cagliari",1,"CC"],["C","Przyborek Adrian","Lazio",1,"CD"],["C","Wiafe Samuel","Genoa",1,"CC"],["A","Malen Donyell","Roma",61,"AC"],["A","Martinez Lautaro","Inter",53,"AC"],["A","Hojlund Rasmus","Napoli",48,"AC"],["A","Ramos Goncalo","Milan",47,"AC"],["A","Thuram Marcus","Inter",46,"AC"],["A","Kolo Muani Randal","Juventus",43,"AC"],["A","Woltemade Nick","Juventus",42,"AC"],["A","Kean Moise","Como",40,"AC"],["A","Douvikas Tasos","Como",39,"AS"],["A","Yildiz Kenan","Juventus",35,"AS"],["A","Scamacca Gianluca","Atalanta",33,"AC"],["A","Berardi Domenico","Sassuolo",32,"AD"],["A","Davis Keinan","Udinese",32,"AC"],["A","Dybala Paulo","Roma",31,"TQ"],["A","Krstovic Nikola","Atalanta",31,"AC"],["A","Esposito Fp Francesco","Inter",29,"AC"],["A","De Ketelaere Charles","Atalanta",28,"TQ"],["A","Simeone Giovanni","Torino",28,"AC"],["A","Castro Santiago","Roma",27,"AC"],["A","Lauriente Armand","Sassuolo",27,"AD"],["A","Pinamonti Andrea","Lazio",26,"AC"],["A","Raspadori Giacomo","Atalanta",25,"AC"],["A","Soule Matias","Roma",25,"AD"],["A","Dovbyk Artem","Bologna",23,"AC"],["A","Diao Assane","Como",22,"AS"],["A","Esposito s Sebastiano","Sassuolo",22,"AC"],["A","Beto -","Fiorentina",21,"AC"],["A","Colombo Lorenzo","Genoa",20,"AC"],["A","Adams Che","Torino",18,"AC"],["A","Raimondo Antonio","Frosinone",17,"AC"],["A","Bowie Kieron","Sassuolo",16,"AC"],["A","Piccoli Roberto","Bologna",16,"AC"],["A","Vitinha -","Genoa",16,"AC"],["A","Yeboah John","Venezia",16,"TQ"],["A","Bonny Ange-Yoan","Inter",15,"AC"],["A","Cutrone Patrick","Monza",15,"AC"],["A","Stulic Nikola","Lecce",15,"AC"],["A","Zapata Duvan","Torino",15,"AC"],["A","Adams Akor","Venezia",14,"AC"],["A","Kevin Carlos Omoruyi","Cagliari",14,"AC"],["A","Pellegrino Mateo","Fiorentina",14,"AC"],["A","Santos Alisson","Napoli",14,"AS"],["A","Boga Jeremie","Juventus",13,"AS"],["A","Geubbels Willem","Lecce",13,"AC"],["A","Ghedjemis Fares","Frosinone",13,"TQ"],["A","Neres David","Napoli",13,"AS"],["A","Romero José","Parma",13,"AC"],["A","Bobcek Tomáš","Frosinone",12,"AC"],["A","Noslin Tijjani","Lazio",12,"AC"],["A","Sulemana Kamaldeen","Atalanta",12,"AS"],["A","Kvernadze Giorgi","Frosinone",11,"AS"],["A","Rrahmani Albion","Venezia",11,"AC"],["A","Varela Gustavo","Monza",11,"AC"],["A","Adorante Andrea","Venezia",10,"AC"],["A","Giovane Santana","Napoli",10,"AC"],["A","Gnonto Degnand","Fiorentina",10,"AD"],["A","Maldini Daniel","Cagliari",10,"TQ"],["A","Borrelli Gennaro","Cagliari",9,"AC"],["A","Dany Mota -","Monza",9,"AC"],["A","Havel Elias","Genoa",9,"AC"],["A","Lucca Lorenzo","Napoli",9,"AC"],["A","Nzola M&#039;Bala","Cagliari",9,"AC"],["A","Osmajic Milutin","Genoa",9,"AC"],["A","Robinson Jay","Monza",9,"TQ"],["A","Birligea Daniel","Frosinone",8,"AC"],["A","Camarda Francesco","Milan",8,"AC"],["A","Frigan Matija","Parma",8,"AC"],["A","Kulenovic Sandro","Torino",8,"AC"],["A","Zeballos Exequiel","Monza",8,"AD"],["A","Ekhator Jeff","Juventus",7,"AC"],["A","Gueye Idrissa","Udinese",7,"AC"],["A","Lang Noa","Napoli",7,"AS"],["A","Mutandwa Kingstone","Cagliari",7,"AC"],["A","Ngonge Cyril","Monza",7,"AD"],["A","Sottil Riccardo","Fiorentina",7,"AS"],["A","Balde Keita","Monza",6,"AS"],["A","Elphege Nesta","Parma",6,"AC"],["A","N’dri Konan","Lecce",6,"AD"],["A","Ahmed Fatah Amar","Lecce",5,"AD"],["A","Karlsson Jesper","Bologna",5,"AS"],["A","Lontani Simone","Parma",5,"AC"],["A","Mendy Paul","Cagliari",5,"AC"],["A","Toure El","Parma",5,"AC"],["A","De Souza Júnior Robson","Genoa",4,"AD"],["A","Milik Arek","Juventus",4,"AC"],["A","Bayo Vakoun","Udinese",3,"AC"],["A","Azon Ivan","Como",2,"AC"],["A","Lisman Kornel","Venezia",2,"AS"],["A","Pierini Nicholas","Sassuolo",2,"AD"],["A","Skjellerup Laurs","Sassuolo",2,"AC"],["A","De Martis De La Rosa Thomás","Parma",1,"AC"],["A","Lauberbach Lion","Venezia",1,"AC"],["A","Pejicic David","Udinese",1,"TQ"],["A","Trepy Yael","Cagliari",1,"AC"],["A","Vinciati Giulio","Udinese",1,"AC"]];
+const ROLES = ['P','D','C','A'];
+const RNAME = {P:'Portieri',D:'Difensori',C:'Centrocampisti',A:'Attaccanti'};
+const DEF = {budget:500, slots:{P:3,D:8,C:8,A:6}, pct:{P:8,D:15,C:27,A:50}, bought:[], wish:[]};
+let S;
+const KEY='fantasta-2627';
+try { S = JSON.parse(localStorage.getItem(KEY)) || null; } catch(e){ S = null; }
+if(!S || !S.slots) S = JSON.parse(JSON.stringify(DEF));
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const totalSlots = () => ROLES.reduce((a,r)=>a+(+S.slots[r]||0),0);
+const spent = () => S.bought.reduce((a,p)=>a+(+p.price||0),0);
+const spentRole = r => S.bought.filter(p=>p.role===r).reduce((a,p)=>a+(+p.price||0),0);
+const countRole = r => S.bought.filter(p=>p.role===r).length;
+const uid = () => Math.random().toString(36).slice(2,9);
+let toastT;
+function toast(m){ const t=$('#toast'); t.textContent=m; t.classList.add('on'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('on'),2200); }
+
+/* ---------- calcolo ---------- */
+function calc(){
+  const rem = S.budget - spent();
+  const left = totalSlots() - S.bought.length;
+  const avg = left>0 ? rem/left : 0;
+  const maxNow = left>0 ? rem - (left-1) : 0; // ogni giocatore restante costa almeno 1
+  const roles = {};
+  ROLES.forEach(r=>{
+    const sl = (+S.slots[r]||0) - countRole(r);
+    const budget = S.budget * (+S.pct[r]||0)/100;
+    const rrem = budget - spentRole(r);
+    roles[r] = {left:sl, budget, rem:rrem, avg: sl>0 ? rrem/sl : 0};
+  });
+  return {rem,left,avg,maxNow,roles};
+}
+const fmt = n => Math.round(n).toLocaleString('it-IT');
+
+/* ---------- render ---------- */
+function render(){
+  const c = calc();
+  const vr = $('#sRem'); vr.textContent = fmt(c.rem);
+  vr.className = 'v' + (c.rem<0?' neg': (c.rem < c.left ? ' low':''));
+  $('#sSpent').textContent = fmt(spent());
+  $('#sSlots').textContent = S.bought.length+'/'+totalSlots();
+  $('#sAvg').textContent = c.left>0 ? fmt(c.avg) : '–';
+  $('#sMax').textContent = c.left>0 ? fmt(Math.max(0,c.maxNow)) : '–';
+
+  // suggerimenti per ruolo
+  $('#sugg').innerHTML = ROLES.map(r=>{
+    const x=c.roles[r];
+    const over = x.rem<0;
+    return `<div class="cell ${r}">
+      <div class="t"><span>${RNAME[r]}</span></div>
+      <div class="v" style="${over?'color:var(--bad)':''}">${x.left>0?fmt(Math.max(0,x.avg)):'✓'}<small>${x.left>0?'a testa · '+x.left+' da prendere':'completo'}</small></div>
+      <div class="d">${over?'sforato di '+fmt(-x.rem):'restano '+fmt(x.rem)+' su '+fmt(x.budget)}</div>
+    </div>`;
+  }).join('');
+
+  const pctSum = ROLES.reduce((a,r)=>a+(+S.pct[r]||0),0);
+  let hint='';
+  if(c.left>0){
+    hint = `Con <b>${fmt(c.rem)}</b> crediti per <b>${c.left}</b> giocatori puoi spendere in media <b>${fmt(c.avg)}</b> a testa. `+
+           `Per un singolo colpo puoi arrivare al massimo a <b>${fmt(Math.max(0,c.maxNow))}</b> lasciando 1 credito a ciascuno degli altri.`;
+  } else if (S.bought.length>=totalSlots() && totalSlots()>0){
+    hint = `Rosa completa. ${c.rem>=0?'Ti avanzano <b>'+fmt(c.rem)+'</b> crediti.':'Hai sforato di <b>'+fmt(-c.rem)+'</b> crediti.'}`;
+  }
+  if(pctSum!==100) hint += ` <span style="color:var(--warn)">Le quote per ruolo sommano ${pctSum}% invece di 100%.</span>`;
+  $('#hint').innerHTML = hint;
+  $('#rosterSub').textContent = `${S.bought.length} su ${totalSlots()} · ${fmt(spent())} spesi`;
+
+  // rosa
+  $('#roster').innerHTML = ROLES.map(r=>{
+    const list = S.bought.filter(p=>p.role===r);
+    const n = +S.slots[r]||0;
+    const rows = list.map(p=>`<div class="row" data-id="${p.id}">
+        <span class="chip ${r}">${r}</span>
+        <div class="n">${esc(p.name)}<small>${esc(p.team||'')}</small></div>
+        <input class="price tab" type="number" min="0" step="1" value="${p.price}" aria-label="Prezzo pagato" data-buy="${p.id}">
+        <button class="x" title="Rimuovi" data-del="${p.id}">×</button>
+      </div>`).join('');
+    const empties = Math.max(0, n-list.length);
+    const emptyRows = Array.from({length:empties},()=>`<div class="row empty"><span class="chip ${r}" style="opacity:.35">${r}</span><div class="slot"></div><span></span><span></span></div>`).join('');
+    const overflow = list.length>n ? `<div class="note" style="color:var(--bad)">Hai ${list.length-n} ${RNAME[r].toLowerCase()} oltre il limite.</div>`:'';
+    return `<div class="role-block"><h3><span class="chip ${r}">${r}</span>${RNAME[r]}<span class="spent">${fmt(spentRole(r))} cr</span><span class="cnt">${list.length}/${n}</span></h3>${rows}${emptyRows}${overflow}</div>`;
+  }).join('');
+
+  // lista obiettivi
+  const wl = S.wish.filter(w=>!S.bought.some(b=>b.key===w.key));
+  const gone = S.wish.length - wl.length;
+  $('#wlSub').textContent = wl.length ? `${wl.length} da prendere${gone?' · '+gone+' presi':''}` : '';
+  if(!wl.length){
+    $('#wishlist').innerHTML = `<div class="empty-msg">Cerca un giocatore e premi «In lista» per pianificare l'asta.</div>`;
+  } else {
+    const byRole = ROLES.map(r=>wl.filter(w=>w.role===r)).flat();
+    const plan = wl.reduce((a,w)=>a+(+w.plan||0),0);
+    $('#wishlist').innerHTML = byRole.map(w=>`<div class="row" data-w="${w.id}">
+        <span class="chip ${w.role}">${w.role}</span>
+        <div class="n">${esc(w.name)}<small>${esc(w.team||'')}</small></div>
+        <span class="q">q. ${w.q||'–'}</span>
+        <input class="price tab" type="number" min="0" step="1" value="${w.plan||''}" placeholder="0" title="Quanto vorresti spendere" data-plan="${w.id}">
+        <div style="display:flex;gap:4px"><button class="buy" data-wbuy="${w.id}">Preso</button><button class="x" title="Togli dalla lista" data-wdel="${w.id}">×</button></div>
+      </div>`).join('') +
+      `<div class="wl-foot"><span>Pianificato <b>${fmt(plan)}</b> per ${wl.length} obiettivi</span>
+       <span class="${plan>c.rem?'over':''}">${plan>c.rem ? 'Supera i crediti rimasti di '+fmt(plan-c.rem) : 'Avanzerebbero '+fmt(c.rem-plan)+' per gli altri '+Math.max(0,c.left-wl.length)}</span></div>`;
+  }
+}
+
+/* ---------- ricerca ---------- */
+const norm = s => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+let results=[], sel=-1;
+function search(q){
+  q = norm(q.trim());
+  if(q.length<2){ results=[]; $('#results').innerHTML=''; return; }
+  const parts = q.split(/\s+/);
+  results = DB.filter(p=>{ const h = norm(p[1]+' '+p[2]); return parts.every(w=>h.includes(w)); }).sort((a,b)=>b[3]-a[3]).slice(0,12);
+  sel = results.length?0:-1;
+  const isBought = p => S.bought.some(b=>b.key===keyOf(p));
+  $('#results').innerHTML = results.map((p,i)=>`<div class="res ${i===sel?'sel':''}" data-i="${i}">
+      <span class="chip ${p[0]}">${p[0]}</span>
+      <div class="n">${esc(p[1])}<small>${esc(p[2])}${isBought(p)?' · già preso':''}</small></div>
+      <span class="q">${p[3]}</span></div>`).join('') +
+    `<div class="res new"><span class="chip" style="background:var(--line);color:var(--muted)">+</span>
+      <div class="n">Aggiungi «${esc(q)}» non in lista</div>
+      <div class="roles">${ROLES.map(r=>`<button data-new="${r}">${r}</button>`).join('')}</div></div>`;
+}
+const keyOf = p => p[0]+'|'+p[1]+'|'+p[2];
+let picked=null;
+function pick(p){
+  picked = p;
+  $('#results').innerHTML=''; $('#q').value='';
+  const c = calc(); const rr = c.roles[p.role];
+  const exist = S.wish.find(w=>w.key===p.key);
+  const sugg = exist && exist.plan ? exist.plan : (rr.left>0 ? Math.round(rr.avg) : Math.round(c.avg));
+  $('#picked').innerHTML = `<div class="picked">
+      <div class="who"><span class="chip ${p.role}">${p.role}</span>${esc(p.name)}<small>${esc(p.team||'')}</small></div>
+      <button class="x" data-unpick title="Chiudi">×</button>
+      <div class="meta">Quotazione <b>${p.q||'–'}</b> · suggerito per un ${RNAME[p.role].toLowerCase().replace(/i$/,'e')} <b>${rr.left>0?fmt(Math.max(1,rr.avg)):'ruolo completo'}</b> · max offerta <b>${fmt(Math.max(0,c.maxNow))}</b></div>
+      <div class="act"><input id="pPrice" type="number" min="1" step="1" value="${Math.max(1,sugg||1)}" aria-label="Prezzo"><button class="buy" data-buynow>Preso</button><button class="ghost" data-wish>${exist?'Aggiorna in lista':'In lista'}</button></div>
+    </div>`;
+  const inp = $('#pPrice'); inp.focus(); inp.select();
+}
+function buy(p, price){
+  price = Math.round(+price);
+  if(!(price>=0)) { toast('Inserisci un prezzo'); return false; }
+  if(countRole(p.role) >= (+S.slots[p.role]||0)) { toast(`Hai già ${S.slots[p.role]} ${RNAME[p.role].toLowerCase()}: alza il limite nelle impostazioni`); return false; }
+  if(S.bought.some(b=>b.key===p.key)) { toast('Già in rosa'); return false; }
+  S.bought.push({id:uid(), key:p.key, name:p.name, team:p.team, role:p.role, q:p.q, price});
+  save(); render(); toast(`${p.name} preso a ${price}`); return true;
+}
+function toWish(p, plan){
+  const ex = S.wish.find(w=>w.key===p.key);
+  if(ex){ ex.plan = plan; } else S.wish.push({id:uid(), key:p.key, name:p.name, team:p.team, role:p.role, q:p.q, plan});
+  save(); render(); toast(`${p.name} in lista a ${plan}`);
+}
+const fromDB = p => ({key:keyOf(p), role:p[0], name:p[1], team:p[2], q:p[3]});
+
+$('#q').addEventListener('input', e=>search(e.target.value));
+$('#q').addEventListener('keydown', e=>{
+  if(e.key==='ArrowDown'&&results.length){ sel=(sel+1)%results.length; search($('#q').value); e.preventDefault(); }
+  else if(e.key==='ArrowUp'&&results.length){ sel=(sel-1+results.length)%results.length; search($('#q').value); e.preventDefault(); }
+  else if(e.key==='Enter'){ if(sel>=0&&results[sel]) pick(fromDB(results[sel])); else if($('#q').value.trim().length>=2){ /* nessun match: chiedi ruolo cliccando */ } e.preventDefault(); }
+  else if(e.key==='Escape'){ $('#results').innerHTML=''; }
+});
+$('#results').addEventListener('mousedown', e=>{
+  const nb = e.target.closest('[data-new]');
+  if(nb){ const name=$('#q').value.trim(); pick({key:'custom|'+norm(name)+'|'+nb.dataset.new, role:nb.dataset.new, name, team:'', q:''}); e.preventDefault(); return; }
+  const r = e.target.closest('.res[data-i]');
+  if(r){ pick(fromDB(results[+r.dataset.i])); e.preventDefault(); }
+});
+document.addEventListener('click', e=>{ if(!e.target.closest('.search')) $('#results').innerHTML=''; });
+
+$('#picked').addEventListener('click', e=>{
+  if(e.target.closest('[data-unpick]')){ picked=null; $('#picked').innerHTML=''; return; }
+  if(e.target.closest('[data-buynow]')){ if(buy(picked, $('#pPrice').value)){ picked=null; $('#picked').innerHTML=''; $('#q').focus(); } }
+  if(e.target.closest('[data-wish]')){ toWish(picked, Math.round(+$('#pPrice').value)||0); picked=null; $('#picked').innerHTML=''; $('#q').focus(); }
+});
+$('#picked').addEventListener('keydown', e=>{ if(e.key==='Enter'&&e.target.id==='pPrice'){ if(buy(picked, e.target.value)){ picked=null; $('#picked').innerHTML=''; $('#q').focus(); } } });
+
+$('#roster').addEventListener('change', e=>{
+  const id=e.target.dataset.buy; if(!id) return;
+  const p=S.bought.find(b=>b.id===id); if(p){ p.price=Math.max(0,Math.round(+e.target.value)||0); save(); render(); }
+});
+$('#roster').addEventListener('click', e=>{
+  const b=e.target.closest('[data-del]'); if(!b) return;
+  const p=S.bought.find(x=>x.id===b.dataset.del);
+  if(p && confirm(`Togliere ${p.name} dalla rosa?`)){ S.bought=S.bought.filter(x=>x.id!==p.id); save(); render(); }
+});
+$('#wishlist').addEventListener('change', e=>{
+  const id=e.target.dataset.plan; if(!id) return;
+  const w=S.wish.find(x=>x.id===id); if(w){ w.plan=Math.max(0,Math.round(+e.target.value)||0); save(); render(); }
+});
+$('#wishlist').addEventListener('click', e=>{
+  const d=e.target.closest('[data-wdel]'); if(d){ S.wish=S.wish.filter(x=>x.id!==d.dataset.wdel); save(); render(); return; }
+  const b=e.target.closest('[data-wbuy]'); if(b){ const w=S.wish.find(x=>x.id===b.dataset.wbuy); if(w) pick({key:w.key,role:w.role,name:w.name,team:w.team,q:w.q}); }
+});
+
+/* ---------- impostazioni ---------- */
+const dlg=$('#dlg');
+$('#btnSettings').addEventListener('click', ()=>{
+  $('#fBudget').value=S.budget;
+  ROLES.forEach(r=>{ $('#f'+r).value=S.slots[r]; $('#fp'+r).value=S.pct[r]; });
+  dlg.showModal();
+});
+$('#btnCancel').addEventListener('click', ()=>dlg.close());
+$('#btnSave').addEventListener('click', ()=>{
+  S.budget=Math.max(1,Math.round(+$('#fBudget').value)||DEF.budget);
+  ROLES.forEach(r=>{ S.slots[r]=Math.max(0,Math.round(+$('#f'+r).value)||0); S.pct[r]=Math.max(0,+$('#fp'+r).value||0); });
+  save(); render(); dlg.close(); toast('Impostazioni salvate');
+});
+$('#btnReset').addEventListener('click', ()=>{
+  if(confirm('Azzerare rosa e lista obiettivi? Le impostazioni restano.')){ S.bought=[]; S.wish=[]; save(); render(); dlg.close(); toast('Asta azzerata'); }
+});
+
+$('#dbCount').textContent = DB.length+' giocatori';
+render();
+</script>
