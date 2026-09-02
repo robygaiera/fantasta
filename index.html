@@ -145,31 +145,6 @@ dialog::backdrop{background:rgba(10,20,14,.5)}
 .toast.on{opacity:1}
 @media (prefers-reduced-motion:reduce){.toast{transition:none}}
 
-/* ---------- stampa / PDF ---------- */
-function buildPrint(){
-  const c = calc(); const today = new Date().toLocaleDateString('it-IT',{day:'numeric',month:'long',year:'numeric'});
-  const roles = ROLES.map(r=>{
-    const list = S.bought.filter(p=>p.role===r).sort((a,b)=>b.price-a.price);
-    const n = +S.slots[r]||0, sub = spentRole(r);
-    const rows = list.map(p=>`<tr><td class="n">${esc(p.name)}</td><td class="team">${esc(p.team||'')}</td><td class="num">${p.q||'–'}</td><td class="num">${fmt(p.price)}</td></tr>`).join('');
-    const empties = Math.max(0,n-list.length);
-    const emptyRows = empties ? `<tr class="empty"><td colspan="4">${empties} ${empties===1?'posto libero':'posti liberi'}</td></tr>` : '';
-    return `<div class="pv-role"><h2><span class="chip ${r}">${r}</span>${RNAME[r]}<span class="r">${list.length}/${n} · ${fmt(sub)} crediti</span></h2>
-      <table class="pv"><thead><tr><th>Giocatore</th><th>Squadra</th><th class="num">Qt.A</th><th class="num">Pagato</th></tr></thead>
-      <tbody>${rows}${emptyRows}<tr class="tot"><td colspan="3">Totale ${RNAME[r].toLowerCase()}</td><td class="num">${fmt(sub)}</td></tr></tbody></table></div>`;
-  }).join('');
-  const wl = S.wish.filter(w=>!S.bought.some(b=>b.key===w.key));
-  const wlHtml = wl.length ? `<div class="pv-wl"><h2>Obiettivi non ancora presi (${wl.length})</h2><ul>${ROLES.map(r=>wl.filter(w=>w.role===r)).flat().map(w=>`<li>${w.role} · ${esc(w.name)} <span style="color:#555">${esc(w.team||'')}</span>${w.plan?' · piano '+fmt(w.plan):''}</li>`).join('')}</ul></div>` : '';
-  $('#printView').innerHTML = `<div class="pv-h"><h1>FantAsta 2026/27 · La mia rosa</h1><span class="d">${today}</span></div>
-    <div class="pv-sum"><div><b>${fmt(S.budget)}</b><span>Budget</span></div><div><b>${fmt(spent())}</b><span>Spesi</span></div><div><b>${fmt(c.rem)}</b><span>Rimasti</span></div><div><b>${S.bought.length}/${totalSlots()}</b><span>Giocatori</span></div>${c.left>0?`<div><b>${fmt(c.avg)}</b><span>Media restanti</span></div>`:''}</div>
-    ${roles}
-    <div class="pv-grand"><span>Totale speso <b>${fmt(spent())}</b></span><span>Residuo <b>${fmt(c.rem)}</b></span></div>
-    ${wlHtml}
-    <div class="pv-foot">Generato con FantAsta · quotazioni listone ufficiale Fantacalcio.it</div>`;
-}
-$('#btnPdf').addEventListener('click', ()=>{ buildPrint(); window.print(); });
-window.addEventListener('beforeprint', buildPrint);
-
 /* ---------- studio ---------- */
 .studio{grid-column:1/-1}
 .filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--line2)}
@@ -198,8 +173,8 @@ details.study[open] summary::before{transform:rotate(90deg)}
 .st-form .st-act{grid-column:1/-1;display:flex;gap:8px;flex-wrap:wrap}
 .st-form .st-act .buy{padding:8px 12px;font-size:13px}
 #fBackup{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg);font:12px/1.4 ui-monospace,Menlo,monospace;color:var(--ink);resize:vertical}
-.show-m{display:none}
 .meta-line{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;font-size:12px;color:var(--muted)}
+.meta-line.show-m{display:none}
 .st-table{display:grid;grid-template-columns:22px minmax(0,1.4fr) minmax(0,1fr) auto auto auto;gap:6px 10px;align-items:center;padding:0 16px 12px;max-height:560px;overflow:auto}
 .st-table > div{display:contents}
 .st-table > div > *{padding:7px 0;border-top:1px solid var(--line2)}
@@ -212,7 +187,7 @@ details.study[open] summary::before{transform:rotate(90deg)}
 .st-head > *{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;border-top:0 !important}
 .more{display:block;width:100%;margin:8px 0 0;text-align:center}
 .res .extra{display:flex;gap:6px;align-items:center;justify-content:flex-end}
-@media (max-width:600px){.st-table{grid-template-columns:22px minmax(0,1fr) auto auto auto;max-height:70vh;gap:4px 8px;padding:0 10px 10px}.hide-m{display:none !important}.show-m{display:flex}.st-table .act .ghost{padding:5px 8px}.st-table .act .buy{padding:5px 8px}}
+@media (max-width:600px){.st-table{grid-template-columns:22px minmax(0,1fr) auto auto auto;max-height:70vh;gap:4px 8px;padding:0 10px 10px}.hide-m{display:none !important}.meta-line.show-m{display:flex}.st-table .act .ghost{padding:5px 8px}.st-table .act .buy{padding:5px 8px}}
 
 /* ---------- stampa / PDF ---------- */
 #printView{display:none}
